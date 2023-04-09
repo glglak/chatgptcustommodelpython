@@ -3,18 +3,26 @@ from langchain.chat_models import ChatOpenAI
 import gradio as gr
 import sys
 import os
+from decouple import config
 
-os.environ["OPENAI_API_KEY"] = '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'
+os.environ["OPENAI_API_KEY"] = config('API_Key')
 
 def construct_index(directory_path):
     max_input_size = 4096
     num_outputs = 512
     max_chunk_overlap = 20
     chunk_size_limit = 600
-
+ 
     prompt_helper = PromptHelper(max_input_size, num_outputs, max_chunk_overlap, chunk_size_limit=chunk_size_limit)
 
-    llm_predictor = LLMPredictor(llm=ChatOpenAI(temperature=0.5, model_name="text-davinci-003", max_tokens=num_outputs))
+    llm_predictor = LLMPredictor(llm=ChatOpenAI(
+  model="text-davinci-003",
+  temperature=0.5,
+  max_tokens=num_outputs,
+  top_p=0.3,
+  frequency_penalty=0.5,
+  presence_penalty=0
+))
 
     documents = SimpleDirectoryReader(directory_path).load_data()
 
