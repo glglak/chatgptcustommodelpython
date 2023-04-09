@@ -4,7 +4,7 @@ import gradio as gr
 import sys
 import os
 
-os.environ["OPENAI_API_KEY"] = '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'
+os.environ["OPENAI_API_KEY"] = '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'
 
 def construct_index(directory_path):
     max_input_size = 4096
@@ -14,7 +14,7 @@ def construct_index(directory_path):
 
     prompt_helper = PromptHelper(max_input_size, num_outputs, max_chunk_overlap, chunk_size_limit=chunk_size_limit)
 
-    llm_predictor = LLMPredictor(llm=ChatOpenAI(temperature=0.7, model_name="gpt-3.5-turbo", max_tokens=num_outputs))
+    llm_predictor = LLMPredictor(llm=ChatOpenAI(temperature=0.5, model_name="text-davinci-003", max_tokens=num_outputs))
 
     documents = SimpleDirectoryReader(directory_path).load_data()
 
@@ -26,7 +26,7 @@ def construct_index(directory_path):
 
 def chatbot(input_text):
     index = GPTSimpleVectorIndex.load_from_disk('index.json')
-    response = index.query(input_text, response_mode="compact")
+    response = index.query(input_text+'\nMarv', response_mode="compact")
     return response.response
 
 iface = gr.Interface(fn=chatbot,
